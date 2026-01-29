@@ -5,9 +5,9 @@ import { supabase } from '@/lib/supabase'
 // GET /api/products/:id
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params
+  const { id } = await params
 
   const { data, error } = await supabase
     .from('products')
@@ -28,9 +28,9 @@ export async function GET(
 // PUT /api/products/:id
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params
+  const { id } = await params
   const body = await req.json()
 
   const { name, description, price, image } = body
@@ -67,9 +67,9 @@ export async function PUT(
 // DELETE /api/products/:id
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params
+  const { id } = await params
 
   const { error } = await supabase
     .from('products')
