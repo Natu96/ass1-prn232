@@ -1,89 +1,56 @@
-// src/app/api/products/[id]/route.ts
-import { NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { NextResponse, NextRequest } from "next/server"
+import { supabaseServer } from "@/lib/supabase-server"
 
-// GET /api/products/:id
 export async function GET(
-  req: Request,
+  _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
-
-  const { data, error } = await supabase
-    .from('products')
-    .select('*')
-    .eq('id', id)
+  const { data, error } = await supabaseServer
+    .from("products")
+    .select("*")
+    .eq("id", id)
     .single()
 
   if (error) {
-    return NextResponse.json(
-      { error: error.message },
-      { status: 404 }
-    )
+    return NextResponse.json({ error: error.message }, { status: 404 })
   }
 
   return NextResponse.json(data)
 }
 
-// PUT /api/products/:id
 export async function PUT(
-  req: Request,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
   const body = await req.json()
 
-  const { name, description, price, image } = body
-
-  if (!name || !description || price === undefined) {
-    return NextResponse.json(
-      { error: 'Missing required fields' },
-      { status: 400 }
-    )
-  }
-
-  const { data, error } = await supabase
-    .from('products')
-    .update({
-      name,
-      description,
-      price,
-      image,
-    })
-    .eq('id', id)
-    .select()
-    .single()
+  const { error } = await supabaseServer
+    .from("products")
+    .update(body)
+    .eq("id", id)
 
   if (error) {
-    return NextResponse.json(
-      { error: error.message },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: error.message }, { status: 400 })
   }
 
-  return NextResponse.json(data)
+  return NextResponse.json({ success: true })
 }
 
-// DELETE /api/products/:id
 export async function DELETE(
-  req: Request,
+  _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
-
-  const { error } = await supabase
-    .from('products')
+  const { error } = await supabaseServer
+    .from("products")
     .delete()
-    .eq('id', id)
+    .eq("id", id)
 
   if (error) {
-    return NextResponse.json(
-      { error: error.message },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: error.message }, { status: 400 })
   }
 
-  return NextResponse.json(
-    { message: 'Product deleted successfully' }
-  )
+  return NextResponse.json({ success: true })
 }

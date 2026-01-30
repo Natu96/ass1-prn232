@@ -1,58 +1,29 @@
-// src/app/api/products/route.ts
-import { NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
-import { Product } from '@/types/product'
+import { NextResponse } from "next/server"
+import { supabaseServer } from "@/lib/supabase-server"
 
-// GET /api/products
 export async function GET() {
-  const { data, error } = await supabase
-    .from('products')
-    .select('*')
-    .order('created_at', { ascending: false })
+  const { data, error } = await supabaseServer
+    .from("products")
+    .select("*")
+    .order("created_at", { ascending: false })
 
   if (error) {
-    return NextResponse.json(
-      { error: error.message },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
   return NextResponse.json(data)
 }
 
-// POST /api/products
 export async function POST(req: Request) {
   const body = await req.json()
 
-  const { name, description, price, image } = body
-
-  // Validate required fields
-  if (!name || !description || price === undefined) {
-    return NextResponse.json(
-      { error: 'Missing required fields' },
-      { status: 400 }
-    )
-  }
-
-  const { data, error } = await supabase
-    .from('products')
-    .insert([
-      {
-        name,
-        description,
-        price,
-        image,
-      },
-    ])
-    .select()
-    .single()
+  const { error } = await supabaseServer
+    .from("products")
+    .insert(body)
 
   if (error) {
-    return NextResponse.json(
-      { error: error.message },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: error.message }, { status: 400 })
   }
 
-  return NextResponse.json(data, { status: 201 })
+  return NextResponse.json({ success: true })
 }
