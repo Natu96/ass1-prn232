@@ -11,9 +11,10 @@ async function getProduct(id: string): Promise<Product> {
 export default async function ProductDetail({
   params,
 }: {
-  params: { id: string }
+  params: { id: string } | Promise<{ id: string }>
 }) {
-  const product = await getProduct(params.id)
+  const { id } = await params
+  const product = await getProduct(id)
 
   return (
     <main className="max-w-2xl mx-auto p-6 space-y-4">

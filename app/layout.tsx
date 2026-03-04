@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar"
-import "./globals.css";
-
+import "./globals.css"
+import AuthGuard from "../components/AuthGuard"
+import { CartProvider } from "@/lib/CartContext"
 
 export default function RootLayout({
   children,
@@ -10,8 +11,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Navbar />
-        {children}
+        <CartProvider>
+          <Navbar />
+          <AuthGuard>
+            {children}
+          </AuthGuard>
+        </CartProvider>
       </body>
     </html>
   )

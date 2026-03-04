@@ -1,12 +1,29 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import { supabase } from "../../lib/supabase-client"
 import { Product } from "@/types/product"
 import ProductForm from "@/components/ProductForm"
 import AdminProductRow from "@/components/AdminProductRow"
 
 export default function AdminPage() {
+  const router = useRouter()
   const [products, setProducts] = useState<Product[]>([])
+  const [checking, setChecking] = useState(true)
+
+  useEffect(() => {
+    const check = async () => {
+      const { data } = await supabase.auth.getUser()
+      const user = data.user
+      if (!user || (user.user_metadata as any)?.role !== "admin") {
+        router.replace("/")
+        return
+      }
+      setChecking(false)
+    }
+    check()
+  }, [router])
 
   const loadProducts = () => {
     fetch("/api/products")
@@ -27,6 +44,8 @@ export default function AdminPage() {
 
     loadProducts()
   }
+
+  if (checking) return <div className="p-6">Checking permissions...</div>
 
   return (
     <main className="max-w-4xl mx-auto p-6">

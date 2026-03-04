@@ -34,3 +34,22 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Seeding Test Accounts
+
+A development-only endpoint `GET /api/seed` is provided to ensure two
+accounts exist:
+
+- **user**: `user@test.com` / `password123`
+- **admin**: `admin@test.com` / `adminpass`
+
+You can hit it with curl or your browser once the dev server is running:
+
+```bash
+export SEED_SECRET=someSecret         # optional, set in .env
+curl "http://localhost:3000/api/seed?secret=$SEED_SECRET"
+```
+
+The response will indicate whether each account was created or already
+exists. The optional `SEED_SECRET` environment variable protects the route;\
+remove or disable this in production.
