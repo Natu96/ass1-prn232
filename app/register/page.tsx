@@ -29,7 +29,7 @@ export default function RegisterPage() {
       setError("Registration successful! Please check your email to confirm your account before signing in.")
       return
     }
-    router.push("/login")
+    router.push("/")
   }
 
   return (
