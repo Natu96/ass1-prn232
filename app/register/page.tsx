@@ -25,6 +25,10 @@ export default function RegisterPage() {
       setError(error.message)
       return
     }
+    if (data.user && !data.user.email_confirmed_at) {
+      setError("Registration successful! Please check your email to confirm your account before signing in.")
+      return
+    }
     router.push("/login")
   }
 
